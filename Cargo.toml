@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
 
-members = [
+members = [ 
     "edge-frame",
     "kitchen-sink",
 ]
@@ -12,3 +12,9 @@ opt-level = "s"
 [profile.dev]
 debug = true # Symbols are nice and they don't increase the size on Flash
 opt-level = "z"
+
+[workspace.dependencies]
+yewdux-middleware = { version = "0.4.0" }
+yewdux = { version = "0.12.0", default-features = false}
+yew = { version = "0.22.0", default-features = false}
+yew-router = { version = "0.19.0"}
