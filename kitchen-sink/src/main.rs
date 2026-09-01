@@ -46,7 +46,7 @@ fn render(route: Routes) -> Html {
     html! {
         <Frame
             app_title="EDGE FRAME"
-            app_url="https://github.com/ivmarkov/edge-frame">
+            app_url="https://github.com/sysgrok/edge-frame">
             <Nav>
                 <Role role={RoleDto::Admin}>
                     <RouteNavItem<Routes> text="Home" icon="fa-solid fa-house" route={Routes::Home}/>
@@ -85,11 +85,32 @@ fn render(route: Routes) -> Html {
 }
 
 fn init_middleware(mcx: &MiddlewareContext) {
-    mcx.register(store_dispatch::<RoleStore, RoleState>());
+    mcx.register(store_dispatch::<RoleStore, RoleState>().fuse(Rc::new(confirm_role_requests())));
     mcx.register(store_dispatch::<WifiConfStore, WifiConf>());
 
     mcx.invoke(RoleState::Role(RoleDto::Admin));
     mcx.invoke(WifiConf::default());
+}
+
+// Stands in for the device backend, which is the one confirming the authentication and the
+// logout requests by reporting the resulting role back. Any credentials are accepted.
+fn confirm_role_requests<D>() -> impl Fn(&MiddlewareContext, RoleState, D)
+where
+    D: MiddlewareDispatch<RoleState>,
+{
+    move |mcx, msg, dispatch| {
+        let confirmation = match &msg {
+            RoleState::Authenticating(_) => Some(RoleState::Role(RoleDto::Admin)),
+            RoleState::LoggingOut(_) => Some(RoleState::Role(RoleDto::None)),
+            _ => None,
+        };
+
+        dispatch.invoke(mcx, msg);
+
+        if let Some(confirmation) = confirmation {
+            mcx.invoke(confirmation);
+        }
+    }
 }
 
 // Set the middleware for each store type

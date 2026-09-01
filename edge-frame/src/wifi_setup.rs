@@ -85,7 +85,7 @@ pub fn wifi_setup(props: &WifiSetupProps) -> Html {
 
         Callback::from(move |_| {
             if let WifiState::Conf(conf) = (*state).clone() {
-                mcx.invoke(Some(conf));
+                mcx.invoke(conf);
             }
         })
     };

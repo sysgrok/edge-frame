@@ -5,6 +5,7 @@ on:
 
 env:
   rust_toolchain: stable
+  CRATE_NAME: edge-frame
 
 jobs:
   publishdryrun:
@@ -12,14 +13,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup | Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup | Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ env.rust_toolchain }}
-      - name: Setup | Set toolchain
-        run: rustup default ${{ env.rust_toolchain }}
-      - name: Add wasm target
-        run: rustup target add wasm32-unknown-unknown
+          targets: wasm32-unknown-unknown
       - name: Build | Publish Dry Run
         run: cd edge-frame; cargo publish --dry-run --target wasm32-unknown-unknown
+      - name: Get the crate version from cargo
+        run: |
+          version=$(cargo metadata --format-version=1 --no-deps | jq -r ".packages[] | select(.name == \"${{env.CRATE_NAME}}\") | .version")
+          echo "crate_version=$version" >> $GITHUB_ENV
+          echo "${{env.CRATE_NAME}} version: $version"
+      - name: Tag the new release (dry run)
+        run: |
+          echo "Would create tag: v${{env.crate_version}}"
+          echo "Would use message: Release v${{env.crate_version}}"

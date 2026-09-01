@@ -411,16 +411,16 @@ pub fn wifi(props: &WifiProps) -> Html {
                     }
                 } else {
                     html! {
-                        <div class="tile is-ancestor">
-                            <div class="tile is-4 is-vertical is-parent">
-                                <div class="tile is-child box">
+                        <div class="columns">
+                            <div class="column is-4">
+                                <div class="box">
                                     <p class={classes!("title", if_true(matches!(&*ap_state, ApState::Errors), "is-danger"))}>{format!("Access Point{}", if !matches!(&*ap_state, ApState::Unchanged) { "*" } else { "" })}</p>
 
                                     { ap_html() }
                                 </div>
                             </div>
-                            <div class="tile is-4 is-vertical is-parent">
-                                <div class="tile is-child box">
+                            <div class="column is-4">
+                                <div class="box">
                                     <p class={classes!("title", if_true(matches!(&*sta_state, StaState::Errors), "is-danger"))}>{format!("Client{}", if !matches!(&*sta_state, StaState::Unchanged) { "*" } else { "" })}</p>
 
                                     { sta_html() }
@@ -431,13 +431,13 @@ pub fn wifi(props: &WifiProps) -> Html {
                 }
             } else if matches!(conf_scope, WifiConfScope::Ap(_)) {
                 html! {
-                    <div class="tile is-child box">
+                    <div class="box">
                         { ap_html() }
                     </div>
                 }
             } else {
                 html! {
-                    <div class="tile is-child box">
+                    <div class="box">
                         { sta_html() }
                     </div>
                 }

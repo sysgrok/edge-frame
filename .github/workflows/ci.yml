@@ -18,18 +18,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup | Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup | Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ env.rust_toolchain }}
           components: rustfmt, clippy
-      - name: Setup | Set toolchain
-        run: rustup default ${{ env.rust_toolchain }}
+          targets: wasm32-unknown-unknown
       - name: Build | Fmt Check
         run: cargo fmt -- --check
-      - name: Add wasm target
-        run: rustup target add wasm32-unknown-unknown
       - name: Build | Clippy
         run: cargo clippy --no-deps --target wasm32-unknown-unknown -- -Dwarnings
       - name: Build | Compile / assets-prepare
@@ -37,6 +34,8 @@ jobs:
       - name: Build | Compile / assets-serve
         run: cd edge-frame; cargo build --no-default-features --features assets-serve
       - name: Setup | Trunk
-        run: cargo install trunk
+        uses: taiki-e/install-action@v2
+        with:
+          tool: trunk
       - name: Build | Trunk
         run: cd kitchen-sink; trunk build
