@@ -29,8 +29,7 @@ impl Default for WifiConf {
     }
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Default)]
-#[cfg_attr(feature = "std", derive(Hash))]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Default)]
 pub enum WifiIpConfScope {
     Disabled,
     #[default]
@@ -38,8 +37,7 @@ pub enum WifiIpConfScope {
     Optional,
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-#[cfg_attr(feature = "std", derive(Hash))]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum WifiConfScope {
     Sta(WifiIpConfScope),
     Ap(WifiIpConfScope),

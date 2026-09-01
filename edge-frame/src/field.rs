@@ -101,10 +101,7 @@ where
     }
 
     pub fn error(&self) -> Option<String> {
-        match self.validator.emit(self.raw_value()) {
-            Ok(_) => None,
-            Err(error) => Some(error),
-        }
+        self.validator.emit(self.raw_value()).err()
     }
 
     pub fn error_str(&self) -> String {
