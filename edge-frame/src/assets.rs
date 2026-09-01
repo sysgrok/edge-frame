@@ -317,7 +317,6 @@ pub mod prepare {
             .filter(|file| file.metadata().map(|md| md.is_file()).unwrap_or(false))
             .map(|file| {
                 let output_file = compress_file(&track, output_dir, assets_dir, &file);
-             
 
                 output_file
             })
