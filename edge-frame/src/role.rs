@@ -72,6 +72,7 @@ pub fn role(props: &RoleProps) -> Html {
         (Some(RoleState::AuthenticationFailed(credentials)), _)
         | (Some(RoleState::Authenticating(credentials)), _)
         | (Some(RoleState::Role(RoleDto::None)), credentials)
+        | (Some(RoleState::LoggedOut), credentials)
             if props.auth =>
         {
             // Not authenticated yet or previous authentication attempt failed => render login dialog if auth=true
@@ -169,6 +170,7 @@ pub fn role_auth_state<R: Routable + PartialEq + Clone + 'static>(
 
     let role = match &role {
         Some(RoleState::Role(role_value)) => Some(*role_value),
+        Some(RoleState::LoggedOut) => Some(RoleDto::None),
         _ => None,
     };
 
